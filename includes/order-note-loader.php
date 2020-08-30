@@ -5,20 +5,20 @@
 class wont_gyrix_order_note_manager_load
 {
     protected $note_template;
-     
-	public function wont_gyrixenqueue_styles() 
+
+    public function wont_gyrixenqueue_styles()
     {
         if ( current_user_can( 'edit_shop_orders' ) ) {
             wp_enqueue_style(
                 'wont_templatecss',
                 WONT_GYRIXTEMPLATEURL . 'admin/css/templatecss.min.css',
-                array(), 
+                array(),
                 '1.0.0'
             );
         }
     }
 
-    public function wont_gyrixenqueue_jscript() 
+    public function wont_gyrixenqueue_jscript()
     {
         if ( current_user_can( 'edit_shop_orders' ) ) {
             $userId = get_current_user_id();
@@ -30,8 +30,8 @@ class wont_gyrix_order_note_manager_load
             wp_register_script(
                     'wont_templatejs',
                     WONT_GYRIXTEMPLATEURL . 'admin/js/template-script.min.js',
-                    array(), 
-                    '1.0.0' 
+                    array(),
+                    '1.0.0'
                 );
 
             wp_localize_script( 'wont_templatejs', 'gyrixnonce', $ajaxSend );
@@ -50,18 +50,16 @@ class wont_gyrix_order_note_manager_load
 	public function wont_gyrixcallhooks()
     {
         if ( current_user_can( 'edit_shop_orders' ) ) {
-            add_submenu_page(
-                                            'woocommerce', 
-                                            'Order Note Template', 
-                                            'Order Note Template', 
-                                            'edit_shop_orders', 
-                                            'wont_gyrix_note_settings',
-                                            array($this, 'wont_gyrix_load_template_page')
-                                            );
+            add_submenu_page('woocommerce',
+                             'Order Note Template',
+                             'Order Note Template',
+                             'edit_shop_orders',
+                             'wont_gyrix_note_settings',
+                             array($this, 'wont_gyrix_load_template_page'));
         }
     }
     // Add "Add note" icon to the action column in order note
-    function wont_gyrix_order_actions( $add_globalpay_requery_button) 
+    function wont_gyrix_order_actions( $add_globalpay_requery_button)
     {
         if(current_user_can('edit_shop_orders') ) {
             global $woocommerce;
@@ -74,16 +72,16 @@ class wont_gyrix_order_note_manager_load
         }
     }
 
-    public function wont_gyrix_admin_order_actions_end( $instance ) 
+    public function wont_gyrix_admin_order_actions_end($instance)
     {
         $note = new wont_gyrix_order_note_view;
-        $templates = $note->wont_gyrix_get_note_template();      
+        $templates = $note->wont_gyrix_get_note_template();
         $note->wont_gyrix_order_add_note_on_view();
         $hook = new wont_gyrix_display_popup;
         $hook->wont_gyrix_display_popup($templates);
     }
 
-    public function wont_gyrix_load_template_page() 
+    public function wont_gyrix_load_template_page()
     {
         if ( current_user_can( 'edit_shop_orders' ) ) {
             $note = new wont_gyrix_order_note_view;
@@ -106,7 +104,7 @@ class wont_gyrix_order_note_manager_load
 
         return $args;
     }
-    
+
     // Remove extra metaboxes like revolutionary slider from edit wont_gyrix_templates of this post type
     public function wont_gyrix_remove_meta_boxes(){
         remove_meta_box( 'wpseo_meta', 'wont_gyrix_templates', 'normal' );
@@ -118,10 +116,10 @@ class wont_gyrix_order_note_manager_load
         global $current_screen;
         if('wont_gyrix_templates' == $current_screen->post_type) {
             remove_action('media_buttons', 'media_buttons');
-        }    
+        }
     }
 
-    // Remove wordpress default edito
+    // Remove wordpress default editor
     public function wont_gyrix_remove_default_editor() {
         remove_post_type_support( 'wont_gyrix_templates', 'editor' );
     }
@@ -132,8 +130,7 @@ class wont_gyrix_order_note_manager_load
                     style="
                         padding: 18px 0px 10px 2px;
                         font-size: 22px;
-                        color: #32373c;"
-                >
+                        color: #32373c;">
                     Content
                 </div>
                 <textarea
@@ -144,7 +141,7 @@ class wont_gyrix_order_note_manager_load
             <?php
         }
     }
-    
+
     public function wont_gyrix_add_note_type_metabox() {
         add_meta_box(
            'custom_meta_box-2',       // $id
@@ -219,12 +216,11 @@ class wont_gyrix_order_note_manager_load
             if ($text == 'Publish') {
                 return 'Save';
             }
-        }    
-        return $translation;        
+        }
+        return $translation;
     }
 
     public function wont_gyrix_add_column($columns) {
-        
         $date = $columns['date'];
         unset( $columns['date'] );
         $columns['note_type'] = 'Note Type';
@@ -246,7 +242,7 @@ class wont_gyrix_order_note_manager_load
             //change this to the list of values you want to show
             //in 'label' => 'value' format
             $values = array(
-                'Customer Notes' => 'customer', 
+                'Customer Notes' => 'customer',
                 'Private Notes'  => 'private'
             );
             ?>
@@ -294,14 +290,10 @@ class wont_gyrix_order_note_manager_load
                 $term = term_exists( 'general', 'folder' );
                 // If general term does not exist create it
                 if ( $term === 0 || $term === null ) {
-                    wp_insert_term(
-                        'General', // the term 
-                        'folder', // the taxonomy
-                        array(
-                        'description'=> 'This is description of general category',
-                        'slug' => 'general'
-                        )
-                    );
+                    wp_insert_term('General', // the term
+                                   'folder', // the taxonomy
+                                   array('description'=> 'This is description of general category',
+                                         'slug' => 'general'));
                 }
                 wp_set_object_terms( $post_id, 'general', 'folder' );
             }
